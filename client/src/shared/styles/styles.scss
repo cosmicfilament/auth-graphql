@@ -1,0 +1,12 @@
+.highlight-list {
+	li:hover {
+		font-weight: bold;
+		font-size: larger;
+		cursor: default;
+	}
+
+	li > i:hover {
+		cursor: pointer;
+		transform: translateY(-.2rem);
+	}
+}

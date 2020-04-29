@@ -7,6 +7,7 @@ import { ApolloProvider } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloLink } from 'apollo-link';
+import { onError } from 'apollo-link-error';
 
 import LandingPage from './components/Landing/LandingPage';
 import Header from './components/Header/Header';
@@ -14,7 +15,6 @@ import LoginForm from './components/Login/LoginFormPage';
 import SignupForm from './components/Signup/SignupFormPage';
 import Dashboard from './components/Dashboard/DashboardPage';
 
-import { onError } from 'apollo-link-error';
 const errorLink = onError(({ graphQLErrors, networkError }) => {
 	if (graphQLErrors) {
 		graphQLErrors.map(({ message, locations, path }) =>

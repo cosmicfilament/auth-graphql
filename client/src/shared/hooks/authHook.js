@@ -1,28 +1,35 @@
 import { useState, useEffect, useCallback } from 'react';
-import { graphql } from 'react-apollo';
+import { useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 
-import { TYPEOF } from '../util/helpers';
 import query from '../../shared/graphql/queries/CurrentUser';
 
-const authHook = props => {
+export const useAuthHook = () => {
 	const [ authenticated, setAuthState ] = useState(false);
+	const { loading, error, data } = useQuery(query);
 
-  const history = useHistory();
+	const history = useHistory();
 
-	const navigate = useCallback(page => {
-		history.push(page);
-	}, []);
+	const gotTo = useCallback(
+		page => {
+			history.push(page);
+		},
+		[ history ]
+	);
+
+	const goBack = useCallback(
+		() => {
+			history.goBack();
+		},
+		[ history ]
+	);
 
 	useEffect(
 		() => {
-			setAuthState(
-				!props.data.loading && TYPEOF(props.data.currentUser === 'object')
-			);
+			setAuthState(!loading && data.currentUser !== null);
 		},
-		[ props.data ]
+		[ loading, data ]
 	);
-	return [ authenticated, navigate ];
-};
 
-export default graphql(query)(authHook);
+	return [ authenticated, gotTo, goBack, error ];
+};

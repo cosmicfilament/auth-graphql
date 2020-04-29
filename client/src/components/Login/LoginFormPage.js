@@ -1,35 +1,22 @@
 import React, { useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { graphql } from 'react-apollo';
-import { useHistory } from 'react-router-dom';
 
 import AuthForm from '../../shared/components/AuthForm';
 import mutation from '../../shared/graphql/mutations/Login';
 import query from '../../shared/graphql/queries/CurrentUser';
-import authHook from '../../shared/hooks/authHook';
+import { useAuthHook } from '../../shared/hooks/authHook';
 
-const LoginForm = props => {
+const LoginForm = () => {
 	const [ login, { error: mutationError } ] = useMutation(mutation);
-
-	const [ authenticated, navigate ] = authHook();
-	// const history = useHistory();
-
-	// useEffect(
-	// 	() => {
-	// 		if (!props.data.loading && TYPEOF(props.data.currentUser) === 'object') {
-	// 			history.push('/Dashboard');
-	// 		}
-	// 	},
-	// 	[ props.data, history ]
-	// );
+	const [ authenticated, gotTo ] = useAuthHook();
 
 	useEffect(
 		() => {
 			if (authenticated) {
-				navigate('Dashboard');
+				gotTo('Dashboard');
 			}
 		},
-		[ authenticated ]
+		[ authenticated, gotTo ]
 	);
 
 	const submitHandler = ({ email, password }) => {
@@ -56,4 +43,4 @@ const LoginForm = props => {
 	);
 };
 
-export default graphql(query)(LoginForm);
+export default LoginForm;

@@ -1,33 +1,27 @@
 import React, { useEffect } from 'react';
 
-import { graphql } from 'react-apollo';
-import { useHistory } from 'react-router-dom';
+import bgnd from '../../shared/images/dashboard.png';
+import { useAuthHook } from '../../shared/hooks/authHook';
 
-import query from '../../shared/graphql/queries/CurrentUser';
-
-const TYPEOF = function (value) {
-	if (value === null) {
-		return value;
-	}
-	if (typeof value === 'undefined') {
-		return 'undefined';
-	}
-	return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
-};
-
-const Dashboard = props => {
-	const history = useHistory();
+const Dashboard = () => {
+	const [ authenticated, goBack ] = useAuthHook();
 
 	useEffect(
 		() => {
-			if (props.data.loading || TYPEOF(props.data.currentUser) !== 'object') {
-				history.goBack();
+			if (!authenticated) {
+				goBack();
 			}
 		},
-		[ props.data, history ]
+		[ authenticated, goBack ]
 	);
 
-	return <div>Hello Bitches!</div>;
+	return (
+		<section className='card row' style={{ background: 'lightyellow' }}>
+			<div className='card-image col s12'>
+				<img src={bgnd} style={{ padding: '5px' }} alt='bird' />
+			</div>
+		</section>
+	);
 };
 
-export default graphql(query)(Dashboard);
+export default Dashboard;

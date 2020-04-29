@@ -1,34 +1,22 @@
 import React, { useEffect } from 'react';
 import { useMutation } from '@apollo/react-hooks';
-import { graphql } from 'react-apollo';
-import { useHistory } from 'react-router-dom';
 
 import AuthForm from '../../shared/components/AuthForm';
 import mutation from '../../shared/graphql/mutations/Signup';
 import query from '../../shared/graphql/queries/CurrentUser';
+import { useAuthHook } from '../../shared/hooks/authHook';
 
-const TYPEOF = function (value) {
-	if (value === null) {
-		return value;
-	}
-	if (typeof value === 'undefined') {
-		return 'undefined';
-	}
-	return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
-};
-
-const SignupForm = props => {
+const SignupForm = () => {
 	const [ signup, { error: mutationError } ] = useMutation(mutation);
-
-	const history = useHistory();
+	const [ authenticated, gotTo ] = useAuthHook();
 
 	useEffect(
 		() => {
-			if (!props.data.loading && TYPEOF(props.data.currentUser) === 'object') {
-				history.push('/Dashboard');
+			if (authenticated) {
+				gotTo('Dashboard');
 			}
 		},
-		[ props.data, history ]
+		[ authenticated, gotTo ]
 	);
 
 	const submitHandler = ({ email, password }) => {
@@ -39,6 +27,7 @@ const SignupForm = props => {
 			console.log(`Error signing up for new acct: ${error}`);
 		});
 	};
+
 	return (
 		<div>
 			<h3>Membership Signup</h3>
@@ -54,4 +43,4 @@ const SignupForm = props => {
 	);
 };
 
-export default graphql(query)(SignupForm);
+export default SignupForm;

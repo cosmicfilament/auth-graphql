@@ -6,29 +6,30 @@ import { useHistory } from 'react-router-dom';
 import AuthForm from '../../shared/components/AuthForm';
 import mutation from '../../shared/graphql/mutations/Login';
 import query from '../../shared/graphql/queries/CurrentUser';
-
-const TYPEOF = function (value) {
-	if (value === null) {
-		return value;
-	}
-	if (typeof value === 'undefined') {
-		return 'undefined';
-	}
-	return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
-};
+import authHook from '../../shared/hooks/authHook';
 
 const LoginForm = props => {
 	const [ login, { error: mutationError } ] = useMutation(mutation);
 
-	const history = useHistory();
+	const [ authenticated, navigate ] = authHook();
+	// const history = useHistory();
+
+	// useEffect(
+	// 	() => {
+	// 		if (!props.data.loading && TYPEOF(props.data.currentUser) === 'object') {
+	// 			history.push('/Dashboard');
+	// 		}
+	// 	},
+	// 	[ props.data, history ]
+	// );
 
 	useEffect(
 		() => {
-			if (!props.data.loading && TYPEOF(props.data.currentUser) === 'object') {
-				history.push('/Dashboard');
+			if (authenticated) {
+				navigate('Dashboard');
 			}
 		},
-		[ props.data, history ]
+		[ authenticated ]
 	);
 
 	const submitHandler = ({ email, password }) => {

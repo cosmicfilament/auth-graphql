@@ -1,22 +1,19 @@
 import React from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useMutation } from '@apollo/react-hooks';
-import { graphql } from 'react-apollo';
 
 import query from '../../shared/graphql/queries/CurrentUser';
 import mutation from '../../shared/graphql/mutations/Logout';
+import { useAuthHook } from '../../shared/hooks/authHook';
 
-const Header = props => {
-	const _data = props.data;
-
+const NavHeader = () => {
+	const { authenticated, goFwdTo, loading } = useAuthHook();
 	const [ logout ] = useMutation(mutation);
-
-	const history = useHistory();
 
 	const handleOnLogoutClick = () => {
 		logout({ refetchQueries: [ { query } ] })
 			.then(() => {
-				history.push('/');
+				goFwdTo('/');
 			})
 			.catch(error => {
 				console.log(`Error Logging Out: ${error}`);
@@ -24,20 +21,21 @@ const Header = props => {
 	};
 
 	const renderButtons = () => {
-		if (_data.loading) {
+		if (loading) {
 			return <div />;
 		}
 
-		if (_data.error) {
-			return <div>{`Error: ${_data.error}`}</div>;
-		}
-
-		if (_data.currentUser) {
+		if (authenticated) {
 			return (
-				<li>
-					{/* eslint-disable-next-line */}
-					<a onClick={handleOnLogoutClick}>Logout</a>
-				</li>
+				<div>
+					<li className=''>
+						<Link to='/dashboard'>Dashboard</Link>
+					</li>
+					<li>
+						{/* eslint-disable-next-line */}
+						<a onClick={handleOnLogoutClick}>Logout</a>
+					</li>
+				</div>
 			);
 		}
 		else {
@@ -66,4 +64,4 @@ const Header = props => {
 	);
 };
 
-export default graphql(query)(Header);
+export default NavHeader;

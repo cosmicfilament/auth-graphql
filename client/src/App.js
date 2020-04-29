@@ -10,10 +10,11 @@ import { ApolloLink } from 'apollo-link';
 import { onError } from 'apollo-link-error';
 
 import LandingPage from './components/Landing/LandingPage';
-import Header from './components/Header/Header';
+import NavHeader from './components/Header/NavHeader';
 import LoginForm from './components/Login/LoginFormPage';
 import SignupForm from './components/Signup/SignupFormPage';
 import Dashboard from './components/Dashboard/DashboardPage';
+import requireAuth from './shared/hocs/RequireAuth';
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
 	if (graphQLErrors) {
@@ -46,12 +47,12 @@ function App () {
 		<ApolloProvider client={client}>
 			<Router>
 				<div className='container'>
-					<Header />
+					<NavHeader />
 					<Switch>
 						<Route exact path='/' component={LandingPage} />
 						<Route path='/login' component={LoginForm} />
 						<Route path='/signup' component={SignupForm} />
-						<Route path='/dashboard' component={Dashboard} />
+						<Route path='/dashboard' component={requireAuth(Dashboard)} />
 					</Switch>
 				</div>
 			</Router>

@@ -8,15 +8,15 @@ import { useAuthHook } from '../../shared/hooks/authHook';
 
 const LoginForm = () => {
 	const [ login, { error: mutationError } ] = useMutation(mutation);
-	const [ authenticated, gotTo ] = useAuthHook();
+	const { authenticated, goFwdTo } = useAuthHook();
 
 	useEffect(
 		() => {
 			if (authenticated) {
-				gotTo('Dashboard');
+				goFwdTo('Dashboard');
 			}
 		},
-		[ authenticated, gotTo ]
+		[ authenticated, goFwdTo ]
 	);
 
 	const submitHandler = ({ email, password }) => {

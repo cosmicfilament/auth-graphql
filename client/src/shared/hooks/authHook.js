@@ -6,11 +6,11 @@ import query from '../../shared/graphql/queries/CurrentUser';
 
 export const useAuthHook = () => {
 	const [ authenticated, setAuthState ] = useState(false);
-	const { loading, error, data } = useQuery(query);
+	const { loading, data } = useQuery(query);
 
 	const history = useHistory();
 
-	const gotTo = useCallback(
+	const goFwdTo = useCallback(
 		page => {
 			history.push(page);
 		},
@@ -28,8 +28,8 @@ export const useAuthHook = () => {
 		() => {
 			setAuthState(!loading && data.currentUser !== null);
 		},
-		[ loading, data ]
+		[ loading, data, setAuthState, authenticated ]
 	);
 
-	return [ authenticated, gotTo, goBack, error ];
+	return { authenticated, goFwdTo, goBack, loading };
 };

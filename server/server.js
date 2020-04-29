@@ -10,6 +10,7 @@ const path = require('path');
 const BASE_DIR = '/home/jpbutler/code2/authGQL';
 const express = require('express');
 const cors = require('cors');
+const models = require('./models');
 const expressGraphQL = require('express-graphql');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -93,12 +94,12 @@ app.use(
 );
 
 // static route
-app.use(express.static(path.join(BASE_DIR, 'build')));
-app.use(express.static(path.join(BASE_DIR, 'build', 'js')));
-app.use(express.static(path.join(BASE_DIR, 'build', 'css')));
-app.use(express.static(path.join(BASE_DIR, 'build', 'images')));
+app.use(express.static(path.join(BASE_DIR, 'client/build')));
+app.use(express.static(path.join(BASE_DIR, 'client/build', 'js')));
+app.use(express.static(path.join(BASE_DIR, 'client/build', 'css')));
+app.use(express.static(path.join(BASE_DIR, 'client/build', 'images')));
 app.get('/*', (req, res) => {
-	res.sendFile(path.join(BASE_DIR, 'build', 'index.html'));
+	res.sendFile(path.join(BASE_DIR, 'client/build', 'index.html'));
 });
 
 module.exports = app;

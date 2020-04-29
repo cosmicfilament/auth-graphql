@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const User = require('../models/user');
+const User = mongoose.model('user');
 
 // SerializeUser is used to provide some identifying token that can be saved
 // in the users session.  We traditionally use the 'ID' for this.

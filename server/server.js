@@ -6,6 +6,8 @@
   * @description 
 */
 
+const path = require('path');
+const BASE_DIR = '/home/jpbutler/code2/authGQL';
 const express = require('express');
 const cors = require('cors');
 const expressGraphQL = require('express-graphql');
@@ -48,6 +50,13 @@ mongoose.connection
 	.once('open', () => console.log('Connected to mongodb instance.'))
 	.on('error', error => console.log('Error connecting to mongodb:', error));
 
+// replaces body-parser
+app.use(express.json());
+app.use(
+	express.urlencoded({
+		extended: false
+	})
+);
 app.use(cors());
 
 // Configures express to use sessions.  This places an encrypted identifier
@@ -82,5 +91,14 @@ app.use(
 		graphiql: true
 	})
 );
+
+// static route
+app.use(express.static(path.join(BASE_DIR, 'build')));
+app.use(express.static(path.join(BASE_DIR, 'build', 'js')));
+app.use(express.static(path.join(BASE_DIR, 'build', 'css')));
+app.use(express.static(path.join(BASE_DIR, 'build', 'images')));
+app.get('/*', (req, res) => {
+	res.sendFile(path.join(BASE_DIR, 'build', 'index.html'));
+});
 
 module.exports = app;

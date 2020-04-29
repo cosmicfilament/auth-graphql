@@ -1,25 +1,41 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, useHistory } from 'react-router-dom';
+import { useMutation } from '@apollo/react-hooks';
 import { graphql } from 'react-apollo';
+
 import query from '../../shared/graphql/queries/CurrentUser';
 import mutation from '../../shared/graphql/mutations/Logout';
 
 const Header = props => {
 	const _data = props.data;
-	console.log(_data);
 
-	const handleOnLogoutClick = event => {
-		props.mutate({ refetchQueries: [ { query } ] });
+	const [ logout ] = useMutation(mutation);
+
+	const history = useHistory();
+
+	const handleOnLogoutClick = () => {
+		logout({ refetchQueries: [ { query } ] })
+			.then(() => {
+				history.push('/');
+			})
+			.catch(error => {
+				console.log(`Error Logging Out: ${error}`);
+			});
 	};
 
 	const renderButtons = () => {
 		if (_data.loading) {
 			return <div />;
 		}
+
+		if (_data.error) {
+			return <div>{`Error: ${_data.error}`}</div>;
+		}
+
 		if (_data.currentUser) {
 			return (
 				<li>
+					{/* eslint-disable-next-line */}
 					<a onClick={handleOnLogoutClick}>Logout</a>
 				</li>
 			);
@@ -50,4 +66,4 @@ const Header = props => {
 	);
 };
 
-export default graphql(mutation)(graphql(query)(Header));
+export default graphql(query)(Header);
